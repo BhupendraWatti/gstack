@@ -22,7 +22,9 @@ import * as path from 'path';
 import { discoverTemplates } from './discover-skills';
 import { COMMAND_DESCRIPTIONS as BROWSE_COMMANDS } from '../browse/src/commands';
 
-const ROOT = path.resolve(import.meta.dir, '..');
+import { fileURLToPath } from 'url';
+const __dir = import.meta.dir || path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dir, '..');
 const OUTPUT = path.join(ROOT, 'gstack', 'llms.txt');
 
 interface SkillEntry {

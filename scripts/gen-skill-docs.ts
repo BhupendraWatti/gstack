@@ -23,7 +23,9 @@ import { generatePlanCompletionAuditShip, generatePlanCompletionAuditReview, gen
 import { ALL_HOST_CONFIGS, ALL_HOST_NAMES, resolveHostArg, getHostConfig } from '../hosts/index';
 import type { HostConfig } from './host-config';
 
-const ROOT = path.resolve(import.meta.dir, '..');
+import { fileURLToPath } from 'url';
+const __dir = import.meta.dir || path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dir, '..');
 const DRY_RUN = process.argv.includes('--dry-run');
 
 // ─── GBrain Detection Override ──────────────────────────────
@@ -1179,7 +1181,7 @@ The orchestrator will persist the plan link to its own memory/knowledge store.
     }
   } catch (e) {
     failures.push({ host: currentHost, error: e as Error });
-    console.error(`WARNING: ${currentHost} generation failed: ${(e as Error).message}`);
+    console.error(`WARNING: ${currentHost} generation failed: ${(e as Error).message}\n${(e as Error).stack}`);
   }
 }
 

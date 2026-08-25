@@ -21,7 +21,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { ResolverFn, TemplateContext } from './types';
 
-const ROOT = path.resolve(import.meta.dir, '..', '..');
+import { fileURLToPath } from 'url';
+const __dir = import.meta.dir || path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dir, '..', '..');
 
 interface SectionEntry {
   id: string;

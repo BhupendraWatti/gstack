@@ -366,8 +366,9 @@ Minimum 0 per category.
 12. **Never refuse to use the browser.** When the user invokes /qa or /qa-only, they are requesting browser-based testing. Never suggest evals, unit tests, or other alternatives as a substitute. Even if the diff appears to have no UI changes, backend changes affect app behavior — always open the browser and test.`;
 }
 
+import { getHostConfig } from '../../hosts/index';
+
 export function generateCoAuthorTrailer(ctx: TemplateContext): string {
-  const { getHostConfig } = require('../../hosts/index');
   const hostConfig = getHostConfig(ctx.host);
   return hostConfig.coAuthorTrailer || 'Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>';
 }
