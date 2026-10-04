@@ -46,8 +46,6 @@ export interface PdftotextInfo {
 
 /**
  * Probe a base path for executability, honoring Windows extension suffixes.
- * Matches browseClient.ts:findExecutable — duplicated rather than shared
- * because the two modules already duplicate isExecutable for compile-isolation.
  */
 export function findExecutable(base: string): string | null {
   if (isExecutable(base)) return base;
@@ -115,8 +113,8 @@ export function resolvePdftotext(env: NodeJS.ProcessEnv = process.env): Pdftotex
 }
 
 /**
- * Locate a poppler companion tool (pdffonts, pdfimages, pdftoppm) used by the
- * emoji render gate. Mirrors resolvePdftotext's resolution order:
+ * Locate a poppler companion tool (pdffonts, pdfimages, pdftoppm, pdfinfo,
+ * pdftotext) used by the e2e render gates. Mirrors resolvePdftotext's resolution order:
  *   1. $GSTACK_<TOOL>_BIN env override (e.g. GSTACK_PDFFONTS_BIN)
  *   2. PATH via Bun.which
  *   3. standard POSIX locations (Homebrew + distro)
@@ -125,7 +123,7 @@ export function resolvePdftotext(env: NodeJS.ProcessEnv = process.env): Pdftotex
  * cleanly rather than failing on a box without full poppler-utils.
  */
 export function resolvePopplerTool(
-  tool: "pdffonts" | "pdfimages" | "pdftoppm",
+  tool: "pdffonts" | "pdfimages" | "pdftoppm" | "pdfinfo" | "pdftotext",
   env: NodeJS.ProcessEnv = process.env,
 ): string | null {
   const override = resolveOverride(env[`GSTACK_${tool.toUpperCase()}_BIN`], env);
@@ -144,6 +142,8 @@ export function resolvePopplerTool(
 
 function isExecutable(p: string): boolean {
   try {
+    // access(X_OK) is true for directories (the traverse bit); only regular files count.
+    if (!fs.statSync(p).isFile()) return false;
     fs.accessSync(p, fs.constants.X_OK);
     return true;
   } catch {
